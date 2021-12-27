@@ -46,7 +46,7 @@ void TNetwork::UDPServerMain() {
     mUDPSock = socket(AF_INET, SOCK_DGRAM, 0);
     // Create a server hint structure for the server
     sockaddr_in serverAddr {};
-    serverAddr.sin_addr.S_un.S_addr = ADDR_ANY; //Any Local
+    serverAddr.sin_addr.S_un.S_addr = Application::Settings.HasCustomIP() ? inet_addr(Application::Settings.CustomIP.c_str()) : ADDR_ANY; //Any Local
     serverAddr.sin_family = AF_INET; // Address format is IPv4
     serverAddr.sin_port = htons(Application::Settings.Port); // Convert from little to big endian
 
@@ -61,7 +61,7 @@ void TNetwork::UDPServerMain() {
     mUDPSock = socket(AF_INET, SOCK_DGRAM, 0);
     // Create a server hint structure for the server
     sockaddr_in serverAddr {};
-    serverAddr.sin_addr.s_addr = INADDR_ANY; //Any Local
+    serverAddr.sin_addr.s_addr = Application::Settings.HasCustomIP() ? inet_addr(Application::Settings.CustomIP.c_str()) : INADDR_ANY; //Any Local
     serverAddr.sin_family = AF_INET; // Address format is IPv4
     serverAddr.sin_port = htons(uint16_t(Application::Settings.Port)); // Convert from little to big endian
 
@@ -74,7 +74,7 @@ void TNetwork::UDPServerMain() {
     }
 #endif
 
-    info(("Vehicle data network online on port ") + std::to_string(Application::Settings.Port) + (" with a Max of ")
+    info(("Vehicle data network online on ") + std::to_string(Application::Settings.Port) + " " + Application::Settings.CustomIP + (" with a Max of ")
         + std::to_string(Application::Settings.MaxPlayers) + (" Clients"));
     while (!mShutdown) {
         try {

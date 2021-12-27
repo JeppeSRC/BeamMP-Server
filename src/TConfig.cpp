@@ -10,6 +10,7 @@ static const char* ConfigFileName = static_cast<const char*>("ServerConfig.toml"
 
 static constexpr std::string_view StrDebug = "Debug";
 static constexpr std::string_view StrPrivate = "Private";
+static constexpr std::string_view StrIP = "IP";
 static constexpr std::string_view StrPort = "Port";
 static constexpr std::string_view StrMaxCars = "MaxCars";
 static constexpr std::string_view StrMaxPlayers = "MaxPlayers";
@@ -62,6 +63,7 @@ void TConfig::CreateConfigFile(std::string_view name) {
 
                 { StrDebug, Application::Settings.DebugModeEnabled },
                 { StrPrivate, Application::Settings.Private },
+                { StrIP, Application::Settings.CustomIP },
                 { StrPort, Application::Settings.Port },
                 { StrMaxCars, Application::Settings.MaxCars },
                 { StrMaxPlayers, Application::Settings.MaxPlayers },
@@ -105,6 +107,11 @@ void TConfig::ParseFromFile(std::string_view name) {
             Application::Settings.Private = val.value();
         } else {
             throw std::runtime_error(std::string(StrPrivate));
+        }
+        if (auto val = GeneralTable[StrIP].value<std::string>(); val.has_value()) {
+            Application::Settings.CustomIP = val.value();
+        } else {
+            
         }
         if (auto val = GeneralTable[StrPort].value<int>(); val.has_value()) {
             Application::Settings.Port = val.value();
@@ -175,6 +182,7 @@ void TConfig::ParseFromFile(std::string_view name) {
 void TConfig::PrintDebug() {
     debug(std::string(StrDebug) + ": " + std::string(Application::Settings.DebugModeEnabled ? "true" : "false"));
     debug(std::string(StrPrivate) + ": " + std::string(Application::Settings.Private ? "true" : "false"));
+    debug(std::string(StrPort) + ": " + "\"" + Application::Settings.CustomIP + "\"");
     debug(std::string(StrPort) + ": " + std::to_string(Application::Settings.Port));
     debug(std::string(StrMaxCars) + ": " + std::to_string(Application::Settings.MaxCars));
     debug(std::string(StrMaxPlayers) + ": " + std::to_string(Application::Settings.MaxPlayers));
